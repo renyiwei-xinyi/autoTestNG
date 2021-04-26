@@ -8,11 +8,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="autotestNG" />
+        <module name="autoTestNG" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="autoTestNG" options="-parameters" />
       <module name="autotestNG" options="-parameters" />
     </option>
   </component>

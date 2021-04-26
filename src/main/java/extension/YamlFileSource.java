@@ -1,5 +1,7 @@
 package extension;
 
+import org.testng.annotations.Test;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
