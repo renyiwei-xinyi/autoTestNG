@@ -1,5 +1,6 @@
 package extension;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -9,6 +10,10 @@ public class DataIterator implements Iterator<Object[]>{
 
     public DataIterator(Stream<Object> stream){
         this.iterator = stream.iterator();
+    }
+
+    public DataIterator(Object[] stream){
+        this.iterator = Arrays.stream(stream).iterator();
     }
 
     @Override

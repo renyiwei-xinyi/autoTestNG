@@ -1,7 +1,4 @@
-import extension.CsvFileSource;
-import extension.JsonFileSource;
-import extension.ProviderUtil;
-import extension.YamlFileSource;
+import extension.*;
 import org.testng.annotations.DataProvider;
 
 import java.lang.reflect.Method;
@@ -23,7 +20,7 @@ public class BaseTestNG {
 
 
     private static Iterator<Object[]> getFileSource(Method method){
-        //  yaml 和 json 注解不能共存
+        //  注解不能共存
         if (method.isAnnotationPresent(YamlFileSource.class)){
             YamlFileSource declaredAnnotation = method.getDeclaredAnnotation(YamlFileSource.class);
             return ProviderUtil.getYaml(declaredAnnotation);
@@ -35,6 +32,11 @@ public class BaseTestNG {
         if (method.isAnnotationPresent(CsvFileSource.class)){
             CsvFileSource declaredAnnotation = method.getDeclaredAnnotation(CsvFileSource.class);
             return ProviderUtil.getCsv(declaredAnnotation);
+        }
+        if (method.isAnnotationPresent(ValueSource.class)){
+            ValueSource declaredAnnotation = method.getDeclaredAnnotation(ValueSource.class);
+            Iterator<Object[]> value = ProviderUtil.getValue(declaredAnnotation);
+            return value;
         }
         //如需扩展 再加if
         return null;

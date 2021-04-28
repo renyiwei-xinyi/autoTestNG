@@ -6,8 +6,12 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -52,6 +56,23 @@ public class ProviderUtil {
                 .flatMap(ProviderUtil::csvValues);
 
         return new DataIterator(objectStream);
+    }
+
+    public static Iterator<Object[]> getValue(ValueSource declaredAnnotation){
+        Stream<? extends Cloneable> shorts = Stream.of(
+                declaredAnnotation.shorts(), declaredAnnotation.bytes(),
+                declaredAnnotation.ints(), declaredAnnotation.longs(),
+                declaredAnnotation.floats(), declaredAnnotation.doubles(),
+                declaredAnnotation.chars(), declaredAnnotation.booleans(), declaredAnnotation.strings(),
+                declaredAnnotation.classes());
+        Stream<? extends Cloneable> stream = shorts.filter((array) -> Array.getLength(array) > 0);
+        List<Object> arrays = stream.collect(Collectors.toList());
+        Object originalArray = arrays.get(0);
+        Object[] arguments = IntStream.range(0, Array.getLength(originalArray))
+                .mapToObj((index) -> Array.get(originalArray, index)).toArray();
+
+        return new DataIterator(arguments);
+
     }
 
     public static Stream<Object> yamlValues(InputStream inputStream) {

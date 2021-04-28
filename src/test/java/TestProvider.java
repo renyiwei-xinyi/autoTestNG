@@ -1,6 +1,7 @@
 import cn.hutool.json.JSONUtil;
 import extension.CsvFileSource;
 import extension.JsonFileSource;
+import extension.ValueSource;
 import extension.YamlFileSource;
 import org.testng.Assert;
 import org.testng.annotations.*;
@@ -12,13 +13,13 @@ public class TestProvider extends BaseTestNG {
 
 
     @BeforeMethod(description = "参数化测试 数据前置处理")
-    public void before_method(Object[] date){
+    public void before_method(Object[] date) {
         Stream<Object> stream = Arrays.stream(date);
         stream.forEach(System.out::println);
     }
 
     @AfterMethod
-    public void after_method(){
+    public void after_method() {
 
     }
 
@@ -61,6 +62,12 @@ public class TestProvider extends BaseTestNG {
         Thread.sleep(1000);
     }
 
+    @ValueSource(ints = {1, 2})
+    @Test(dataProvider = "single")
+    public void test_12739(Object a) {
+        System.out.println(a);
+    }
+
     @Parameters
     @Test
     void test_1231(@Optional("1") String s,
@@ -72,7 +79,5 @@ public class TestProvider extends BaseTestNG {
         Assert.assertEquals(b, 9998877.1f);
         Assert.assertEquals(c, 12.8586);
         System.out.println("PASS");
-
-
     }
 }
