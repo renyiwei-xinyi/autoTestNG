@@ -64,7 +64,19 @@ public class TestProvider extends BaseTestNG {
 
     @ValueSource(ints = {1, 2})
     @Test(dataProvider = "single")
-    public void test_12739(Object a) {
+    public void test_12739(int a) {
+        System.out.println(a);
+    }
+
+    static class date{
+        void getTest(){
+            System.out.println("nihao");
+        }
+    }
+
+    @ValueSource(classes = {date.class})
+    @Test(dataProvider = "single")
+    public void test_122339(Object a) {
         System.out.println(a);
     }
 
