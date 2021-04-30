@@ -1,18 +1,39 @@
 import cn.hutool.json.JSONUtil;
 import extension.*;
 import org.testng.Assert;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class TestProvider extends BaseTestNG {
 
 
     @BeforeMethod(description = "参数化测试 数据前置处理")
-    public void before_method(Object[] date) {
-        Stream<Object> stream = Arrays.stream(date);
+    public void before_method(Object[] data) {
+        Stream<Object> stream = Arrays.stream(data);
         stream.forEach(System.out::println);
+    }
+
+    @AfterMethod
+    public void after_method(Object[] data, Method method, ITestResult result, ITestContext context){
+        if (method.isAnnotationPresent(CheckDataAll.class) || method.isAnnotationPresent(CheckData.class)){
+            CheckDataAll checkDataAll = method.getDeclaredAnnotation(CheckDataAll.class);
+            CheckData checkData = method.getDeclaredAnnotation(CheckData.class);
+            for ( Iterator<Object[]> json = ProviderUtil.getJson(checkData.jsonFiles()); json.hasNext();){
+                System.out.println(Arrays.toString(json.next()));
+            }
+
+        }
+
+        Stream<Object> stream = Arrays.stream(data);
+        stream.forEach(System.out::println);
+        System.out.println(result);
     }
 
 
@@ -54,6 +75,7 @@ public class TestProvider extends BaseTestNG {
         Thread.sleep(1000);
     }
 
+    @CheckData(jsonFiles = "src/test/resources/test3.json")
     @ValueSource(ints = {1, 2})
     @Test(dataProvider = "single")
     public void test_12739(int a, int b) {

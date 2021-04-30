@@ -28,8 +28,7 @@ public class ProviderUtil {
             .withColumnReordering(false);
 
 
-    public static Iterator<Object[]> getYaml(YamlFileSource source) {
-        String[] files = source.files();
+    public static Iterator<Object[]> getYaml(String[] files) {
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -38,8 +37,7 @@ public class ProviderUtil {
         return new DataIterator(objectStream);
     }
 
-    public static Iterator<Object[]> getJson(JsonFileSource source) {
-        String[] files = source.files();
+    public static Iterator<Object[]> getJson(String[] files) {
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -48,8 +46,7 @@ public class ProviderUtil {
         return new DataIterator(objectStream);
     }
 
-    public static Iterator<Object[]> getCsv(CsvFileSource source) {
-        String[] files = source.files();
+    public static Iterator<Object[]> getCsv(String[] files) {
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -143,13 +140,13 @@ public class ProviderUtil {
                 .mapToObj((index) -> Array.get(originalArray, index)).toArray();
     }
 
-    private static Stream<Object> getObjectStream(Iterable<Object> iterable) {
+    public static Stream<Object> getObjectStream(Iterable<Object> iterable) {
 
         return StreamSupport.stream(iterable.spliterator(), true);
 
     }
 
-    private static Stream<Object> getObjectStream(Iterator<Object> iterator) {
+    public static Stream<Object> getObjectStream(Iterator<Object> iterator) {
 
         Iterable<Object> iterable = () -> iterator;
 
@@ -157,13 +154,13 @@ public class ProviderUtil {
 
     }
 
-    private static Stream<Object> getObjectStream(Object jsonObject) {
+    public static Stream<Object> getObjectStream(Object jsonObject) {
 
         return Stream.of(jsonObject);
 
     }
 
-    private static InputStream openInputStream(String resource) {
+    public static InputStream openInputStream(String resource) {
         try {
             return new FileInputStream(resource);
         } catch (FileNotFoundException e) {

@@ -24,15 +24,15 @@ public class BaseTestNG {
         //  注解不能共存
         if (method.isAnnotationPresent(YamlFileSource.class)){
             YamlFileSource yamlFileSource = method.getDeclaredAnnotation(YamlFileSource.class);
-            return ProviderUtil.getYaml(yamlFileSource);
+            return ProviderUtil.getYaml(yamlFileSource.files());
         }
         if (method.isAnnotationPresent(JsonFileSource.class)){
             JsonFileSource jsonFileSource = method.getDeclaredAnnotation(JsonFileSource.class);
-            return ProviderUtil.getJson(jsonFileSource);
+            return ProviderUtil.getJson(jsonFileSource.files());
         }
         if (method.isAnnotationPresent(CsvFileSource.class)){
             CsvFileSource csvFileSource = method.getDeclaredAnnotation(CsvFileSource.class);
-            return ProviderUtil.getCsv(csvFileSource);
+            return ProviderUtil.getCsv(csvFileSource.files());
         }
         if (method.isAnnotationPresent(ValueSource.class)){
             ValueSource valueSource = method.getDeclaredAnnotation(ValueSource.class);
