@@ -28,8 +28,8 @@ public class ProviderUtil {
             .withColumnReordering(false);
 
 
-    public static Iterator<Object[]> getYaml(YamlFileSource declaredAnnotation) {
-        String[] files = declaredAnnotation.files();
+    public static Iterator<Object[]> getYaml(YamlFileSource source) {
+        String[] files = source.files();
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -38,8 +38,8 @@ public class ProviderUtil {
         return new DataIterator(objectStream);
     }
 
-    public static Iterator<Object[]> getJson(JsonFileSource declaredAnnotation) {
-        String[] files = declaredAnnotation.files();
+    public static Iterator<Object[]> getJson(JsonFileSource source) {
+        String[] files = source.files();
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -48,8 +48,8 @@ public class ProviderUtil {
         return new DataIterator(objectStream);
     }
 
-    public static Iterator<Object[]> getCsv(CsvFileSource declaredAnnotation) {
-        String[] files = declaredAnnotation.files();
+    public static Iterator<Object[]> getCsv(CsvFileSource source) {
+        String[] files = source.files();
 
         Stream<Object> objectStream = Arrays.stream(files)
                 .map(ProviderUtil::openInputStream)
@@ -58,21 +58,27 @@ public class ProviderUtil {
         return new DataIterator(objectStream);
     }
 
-    public static Iterator<Object[]> getValue(ValueSource declaredAnnotation){
-        Stream<? extends Cloneable> shorts = Stream.of(
-                declaredAnnotation.shorts(), declaredAnnotation.bytes(),
-                declaredAnnotation.ints(), declaredAnnotation.longs(),
-                declaredAnnotation.floats(), declaredAnnotation.doubles(),
-                declaredAnnotation.chars(), declaredAnnotation.booleans(), declaredAnnotation.strings(),
-                declaredAnnotation.classes());
-        Stream<? extends Cloneable> stream = shorts.filter((array) -> Array.getLength(array) > 0);
-        List<Object> arrays = stream.collect(Collectors.toList());
-        Object originalArray = arrays.get(0);
-        Object[] arguments = IntStream.range(0, Array.getLength(originalArray))
-                .mapToObj((index) -> Array.get(originalArray, index)).toArray();
+    public static Iterator<Object[]> getValue(ValueSource source) {
 
-        return new DataIterator(arguments);
+        if (source.multi()) {
+            // 多形参接收 多类型接收 二维数组模式
+            return multiSourceValue(source).iterator();
+        } else {
+            // 单形参接收 单类型接收 一维数组模式
+            Object[] objects = singleSourceValue(source);
 
+            return new DataIterator(objects);
+        }
+
+    }
+
+    public static Iterator<Object[]> getValues(ValueSources sources) {
+
+        Stream<Object[]> source = Stream.of(sources.value())
+                .filter(ValueSource::multi)
+                .flatMap(ProviderUtil::multiSourceValue);
+
+        return source.iterator();
     }
 
     public static Stream<Object> yamlValues(InputStream inputStream) {
@@ -101,8 +107,7 @@ public class ProviderUtil {
                     .with(schema)
                     .readValues(inputStream)
                     .readAll()
-                    .iterator()
-                    ;
+                    .iterator();
 
             return getObjectStream(iterator);
 
@@ -111,6 +116,31 @@ public class ProviderUtil {
         }
         return null;
 
+    }
+
+    public static Stream<Object[]> multiSourceValue(ValueSource source){
+
+        List<Object> arrays = Stream.of(source.shorts(), source.bytes(), source.ints(), source.longs(), source.floats(), source.doubles(), source.chars(), source.booleans(), source.strings(), source.classes())
+                .filter((array) -> Array.getLength(array) > 0)
+                .collect(Collectors.toList());
+
+        return arrays.stream()
+                .map(o ->
+                        IntStream.range(0, Array.getLength(o))
+                                .mapToObj((index) -> Array.get(o, index))
+                                .toArray()
+                );
+    }
+
+    public static Object[] singleSourceValue(ValueSource source){
+
+        List<Object> arrays = Stream.of(source.shorts(), source.bytes(), source.ints(), source.longs(), source.floats(), source.doubles(), source.chars(), source.booleans(), source.strings(), source.classes())
+                .filter((array) -> Array.getLength(array) > 0)
+                .collect(Collectors.toList());
+
+        Object originalArray = arrays.get(0);
+        return IntStream.range(0, Array.getLength(originalArray))
+                .mapToObj((index) -> Array.get(originalArray, index)).toArray();
     }
 
     private static Stream<Object> getObjectStream(Iterable<Object> iterable) {

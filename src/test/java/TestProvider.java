@@ -1,8 +1,5 @@
 import cn.hutool.json.JSONUtil;
-import extension.CsvFileSource;
-import extension.JsonFileSource;
-import extension.ValueSource;
-import extension.YamlFileSource;
+import extension.*;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -16,11 +13,6 @@ public class TestProvider extends BaseTestNG {
     public void before_method(Object[] date) {
         Stream<Object> stream = Arrays.stream(date);
         stream.forEach(System.out::println);
-    }
-
-    @AfterMethod
-    public void after_method() {
-
     }
 
 
@@ -64,7 +56,13 @@ public class TestProvider extends BaseTestNG {
 
     @ValueSource(ints = {1, 2})
     @Test(dataProvider = "single")
-    public void test_12739(int a) {
+    public void test_12739(int a, int b) {
+        System.out.println(a);
+    }
+
+    @ValueSource(ints = {1, 2, 3},multi = false)
+    @Test(dataProvider = "single")
+    public void test_1273912(int a) {
         System.out.println(a);
     }
 
@@ -78,6 +76,17 @@ public class TestProvider extends BaseTestNG {
     @Test(dataProvider = "single")
     public void test_122339(Object a) {
         System.out.println(a);
+    }
+
+
+    @ValueSource(ints = {1,2,3})
+    @ValueSource(ints = {1,2,3})
+    @Test(dataProvider = "single")
+    public void test_1728(Object a, Object b,Object c){
+        System.out.println(a);
+        //System.out.println(b);
+
+
     }
 
     @Parameters

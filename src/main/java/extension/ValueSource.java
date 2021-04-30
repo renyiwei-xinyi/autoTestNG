@@ -1,17 +1,17 @@
 package extension;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
+@Repeatable(ValueSources.class)
 public @interface ValueSource {
 
     /*
-       不支持同时输入多种类型
+       默认 多形参接收 单类型接收
+       可选参数 multi 为true时 多形参 多类型接收 单迭代 可重复注解实现多迭代；为false时 单形参 单类型 多迭代
      */
+    boolean multi() default true;
 
     short[] shorts() default {};
 
