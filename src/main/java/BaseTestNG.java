@@ -37,7 +37,8 @@ public class BaseTestNG {
         if (method.isAnnotationPresent(ValueSource.class)){
             ValueSource valueSource = method.getDeclaredAnnotation(ValueSource.class);
             return ProviderUtil.getValue(valueSource);
-        }if (method.isAnnotationPresent(ValueSources.class)){
+        }
+        if (method.isAnnotationPresent(ValueSources.class)){
             ValueSources valueSources = method.getDeclaredAnnotation(ValueSources.class);
             return ProviderUtil.getValues(valueSources);
         }
