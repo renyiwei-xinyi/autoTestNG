@@ -107,7 +107,14 @@ public class TestProvider extends BaseTestNG {
     public void test_1728(Object a, Object b,Object c){
         System.out.println(a);
         //System.out.println(b);
+    }
 
+    @ValueSource(ints = 1, booleans = true, multi = false)
+    @Test(dataProvider = "single")
+    public void test_12712339(int a){
+        System.out.println(a);
+        //不同的数据类型 数据驱动会 按照 迭代来进行; 设置 单参数的话 第二个数据类型会被跳过
+        //System.out.println(b);
 
     }
 
