@@ -125,14 +125,10 @@
     </dependencies>
 
     <build>
-        <filters>
-            <filter>src/main/resources/filters/filter_${env}.properties</filter>
-        </filters>
 
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -186,36 +182,5 @@
 
         </plugins>
     </build>
-
-
-    <profiles>
-        <!-- dev测试环境 -->
-        <profile>
-            <id>dev</id>
-            <properties>
-                <env>dev</env>
-            </properties>
-        </profile>
-
-        <!-- uat测试环境 -->
-        <profile>
-            <id>uat</id>
-            <properties>
-                <env>uat</env>
-            </properties>
-        </profile>
-
-        <!-- sit测试环境 -->
-        <profile>
-            <id>sit</id>
-            <properties>
-                <env>sit</env>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault><!--默认启用的是sit环境配置-->
-            </activation>
-        </profile>
-
-    </profiles>
 
 </project>
