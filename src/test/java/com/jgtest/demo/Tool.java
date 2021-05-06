@@ -1,3 +1,5 @@
+package com.jgtest.demo;
+
 import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;

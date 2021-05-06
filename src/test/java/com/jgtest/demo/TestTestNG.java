@@ -1,9 +1,6 @@
+package com.jgtest.demo;
 
-import cn.hutool.json.JSONUtil;
-import extension.CsvFileSource;
-import extension.JsonFileSource;
-import extension.YamlFileSource;
-import org.testng.Assert;
+import com.jgtest.BaseTestNG;
 import org.testng.annotations.*;
 
 

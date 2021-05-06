@@ -1,12 +1,14 @@
+package com.jgtest.demo;
+
 import cn.hutool.json.JSONUtil;
-import extension.*;
+import com.jgtest.BaseTestNG;
+import com.jgtest.extension.*;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -46,8 +48,8 @@ public class TestProvider extends BaseTestNG {
 
 
     @YamlFileSource(files = {
-            "src/test/resources/test.yaml",
-            "src/test/resources/test2.yaml"
+            "src/main/resources/testcase/test.yaml",
+            "src/main/resources/testcase/test2.yaml"
     })
     @Test(dataProvider = "single")
     public void test_1729127(Object s) throws InterruptedException {
@@ -56,8 +58,8 @@ public class TestProvider extends BaseTestNG {
     }
 
     @JsonFileSource(files = {
-            "src/test/resources/test3.json",
-            "src/test/resources/test4.json"
+            "src/main/resources/testcase/test3.json",
+            "src/main/resources/testcase/test4.json"
     })
     @Test(dataProvider = "parallel")
     public void test_17123123(Object s) throws InterruptedException {
@@ -66,7 +68,7 @@ public class TestProvider extends BaseTestNG {
     }
 
     @CsvFileSource(files = {
-            "src/test/resources/test6.csv"
+            "src/main/resources/testcase/test6.csv"
     })
     @Test(dataProvider = "parallel")
     public void test_1713123(Object s) throws InterruptedException {
@@ -75,7 +77,7 @@ public class TestProvider extends BaseTestNG {
         Thread.sleep(1000);
     }
 
-    @CheckData(jsonFiles = "src/test/resources/test3.json")
+    @CheckData(jsonFiles = "src/main/resources/testcase/test3.json")
     @ValueSource(ints = {1, 2})
     @Test(dataProvider = "single")
     public void test_12739(int a, int b) {

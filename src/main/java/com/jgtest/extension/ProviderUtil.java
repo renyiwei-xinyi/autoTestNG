@@ -1,4 +1,4 @@
-package extension;
+package com.jgtest.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;

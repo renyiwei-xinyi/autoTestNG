@@ -1,11 +1,14 @@
-import extension.*;
+package com.jgtest;
+
+import com.jgtest.common.SetUpTearDown;
+import com.jgtest.extension.*;
 import org.testng.annotations.DataProvider;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
 
-public class BaseTestNG {
+public class BaseTestNG extends SetUpTearDown {
 
     @DataProvider(name = "single")
     public static Iterator<Object[]> single(Method method){

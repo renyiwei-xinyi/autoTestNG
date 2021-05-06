@@ -1,4 +1,4 @@
-package extension;
+package com.jgtest.extension;
 
 import java.lang.annotation.*;
 
