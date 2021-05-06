@@ -126,7 +126,7 @@
 
     <build>
         <filters>
-            <filter>src/main/filters/filter_${env}.properties</filter>
+            <filter>src/main/resources/filters/filter_${env}.properties</filter>
         </filters>
 
         <resources>

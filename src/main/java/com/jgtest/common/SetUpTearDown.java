@@ -29,6 +29,7 @@ public class SetUpTearDown {
     //环境配置
     @BeforeClass
     public void envSetUp() {
+        //todo: env
         String system = "env.properties";    //环境由filter配置
         GetFileMess getFileMess = new GetFileMess();
         RestAssured.baseURI = getFileMess.getValue("baseURI", system);
@@ -42,7 +43,7 @@ public class SetUpTearDown {
     @AfterSuite
     public void createEnvPropertiesForReport() {
         Map<String, String> data = new HashMap<>();
-        String database = "iiaccount_db.properties";
+        String database = "db.properties";
         GetFileMess getFileMess = new GetFileMess();
         data.put("DatabaseLoginName", getFileMess.getValue("DP_Name", database));
         data.put("DatabaseLoginPass", getFileMess.getValue("DP_Password", database));
