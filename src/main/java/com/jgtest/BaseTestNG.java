@@ -2,9 +2,12 @@ package com.jgtest;
 
 import com.jgtest.common.SetUpTearDown;
 import com.jgtest.extension.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.testng.annotations.DataProvider;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -12,8 +15,7 @@ public class BaseTestNG extends SetUpTearDown {
 
     @DataProvider(name = "single")
     public static Iterator<Object[]> single(Method method){
-        Iterator<Object[]> fileSource = getFileSource(method);
-        return fileSource;
+        return getFileSource(method);
     }
 
     @DataProvider(name = "parallel", parallel = true)
@@ -25,25 +27,39 @@ public class BaseTestNG extends SetUpTearDown {
 
     private static Iterator<Object[]> getFileSource(Method method){
         //  注解不能共存
-        if (method.isAnnotationPresent(YamlFileSource.class)){
-            YamlFileSource yamlFileSource = method.getDeclaredAnnotation(YamlFileSource.class);
-            return ProviderUtil.getYaml(yamlFileSource.files());
-        }
+        // todo: 实现注解可以共存 可以随意组合注解 形成一套参数 注入到用例中
+
         if (method.isAnnotationPresent(JsonFileSource.class)){
-            JsonFileSource jsonFileSource = method.getDeclaredAnnotation(JsonFileSource.class);
-            return ProviderUtil.getJson(jsonFileSource.files());
+            JsonFileSource source = method.getDeclaredAnnotation(JsonFileSource.class);
+            return ProviderUtil.getJson(source);
+        }
+        if (method.isAnnotationPresent(JsonFileSources.class)){
+            JsonFileSources source = method.getDeclaredAnnotation(JsonFileSources.class);
+            return ProviderUtil.getMultiJson(source);
+        }
+        if (method.isAnnotationPresent(YamlFileSource.class)){
+            YamlFileSource source = method.getDeclaredAnnotation(YamlFileSource.class);
+            return ProviderUtil.getYaml(source);
+        }
+        if (method.isAnnotationPresent(YamlFileSources.class)){
+            YamlFileSources source = method.getDeclaredAnnotation(YamlFileSources.class);
+            return ProviderUtil.getMultiYaml(source);
         }
         if (method.isAnnotationPresent(CsvFileSource.class)){
-            CsvFileSource csvFileSource = method.getDeclaredAnnotation(CsvFileSource.class);
-            return ProviderUtil.getCsv(csvFileSource.files());
+            CsvFileSource source = method.getDeclaredAnnotation(CsvFileSource.class);
+            return ProviderUtil.getCsv(source);
+        }
+        if (method.isAnnotationPresent(CsvFileSources.class)){
+            CsvFileSources source = method.getDeclaredAnnotation(CsvFileSources.class);
+            return ProviderUtil.getMultiCsv(source);
         }
         if (method.isAnnotationPresent(ValueSource.class)){
-            ValueSource valueSource = method.getDeclaredAnnotation(ValueSource.class);
-            return ProviderUtil.getValue(valueSource);
+            ValueSource source = method.getDeclaredAnnotation(ValueSource.class);
+            return ProviderUtil.getValue(source);
         }
         if (method.isAnnotationPresent(ValueSources.class)){
-            ValueSources valueSources = method.getDeclaredAnnotation(ValueSources.class);
-            return ProviderUtil.getValues(valueSources);
+            ValueSources source = method.getDeclaredAnnotation(ValueSources.class);
+            return ProviderUtil.getMultiValues(source);
         }
 
         //如需扩展 再加if

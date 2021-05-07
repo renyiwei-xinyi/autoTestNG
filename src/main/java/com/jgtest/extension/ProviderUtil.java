@@ -7,9 +7,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -28,38 +26,77 @@ public class ProviderUtil {
             .withColumnReordering(false);
 
 
-    public static Iterator<Object[]> getYaml(String[] files) {
+    public static Iterator<Object[]> getJson(JsonFileSource source) {
+        if (source.multi()) {
+            // 多形参接收 多类型接收 二维数组模式
+            return multiSource(source).iterator();
+        } else {
+            // 单形参接收 单类型接收 一维数组模式
+            Stream<Object> objectStream = Arrays.stream(source.files())
+                    .map(ProviderUtil::openInputStream)
+                    .flatMap(ProviderUtil::jsonValues);
 
-        Stream<Object> objectStream = Arrays.stream(files)
-                .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::yamlValues);
-
-        return new DataIterator(objectStream);
+            return new DataIterator(objectStream);
+        }
     }
 
-    public static Iterator<Object[]> getJson(String[] files) {
+    public static Iterator<Object[]> getMultiJson(JsonFileSources sources) {
+        Stream<Object[]> source = Stream.of(sources.value())
+                .filter(JsonFileSource::multi)
+                .flatMap(ProviderUtil::multiSource);
 
-        Stream<Object> objectStream = Arrays.stream(files)
-                .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::jsonValues);
-
-        return new DataIterator(objectStream);
+        return source.iterator();
     }
 
-    public static Iterator<Object[]> getCsv(String[] files) {
+    public static Iterator<Object[]> getYaml(YamlFileSource source) {
+        if (source.multi()) {
+            // 多形参接收 多类型接收 二维数组模式
+            return multiSource(source).iterator();
+        } else {
+            // 单形参接收 单类型接收 一维数组模式
+            Stream<Object> objectStream = Arrays.stream(source.files())
+                    .map(ProviderUtil::openInputStream)
+                    .flatMap(ProviderUtil::yamlValues);
 
-        Stream<Object> objectStream = Arrays.stream(files)
-                .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::csvValues);
+            return new DataIterator(objectStream);
+        }
+    }
 
-        return new DataIterator(objectStream);
+    public static Iterator<Object[]> getMultiYaml(YamlFileSources sources) {
+        Stream<Object[]> source = Stream.of(sources.value())
+                .filter(YamlFileSource::multi)
+                .flatMap(ProviderUtil::multiSource);
+
+        return source.iterator();
+    }
+
+    public static Iterator<Object[]> getCsv(CsvFileSource source) {
+        if (source.multi()) {
+            // 多形参接收 多类型接收 二维数组模式
+            return multiSource(source).iterator();
+        } else {
+            // 单形参接收 单类型接收 一维数组模式
+            Stream<Object> objectStream = Arrays.stream(source.files())
+                    .map(ProviderUtil::openInputStream)
+                    .flatMap(ProviderUtil::csvValues);
+
+            return new DataIterator(objectStream);
+        }
+    }
+
+    public static Iterator<Object[]> getMultiCsv(CsvFileSources sources) {
+        Stream<Object[]> source = Stream.of(sources.value())
+                .filter(CsvFileSource::multi)
+                .flatMap(ProviderUtil::multiSource);
+
+        return source.iterator();
     }
 
     public static Iterator<Object[]> getValue(ValueSource source) {
 
         if (source.multi()) {
             // 多形参接收 多类型接收 二维数组模式
-            return multiSourceValue(source).iterator();
+            return multiSource(source).iterator();
         } else {
             // 单形参接收 单类型接收 一维数组模式
             Object[] objects = singleSourceValue(source);
@@ -69,11 +106,11 @@ public class ProviderUtil {
 
     }
 
-    public static Iterator<Object[]> getValues(ValueSources sources) {
+    public static Iterator<Object[]> getMultiValues(ValueSources sources) {
 
         Stream<Object[]> source = Stream.of(sources.value())
                 .filter(ValueSource::multi)
-                .flatMap(ProviderUtil::multiSourceValue);
+                .flatMap(ProviderUtil::multiSource);
 
         return source.iterator();
     }
@@ -115,7 +152,40 @@ public class ProviderUtil {
 
     }
 
-    public static Stream<Object[]> multiSourceValue(ValueSource source){
+    public static Stream<Object[]> multiSource(JsonFileSource source){
+
+        Object[] objects = Stream.of(source.files())
+                .map(ProviderUtil::openInputStream)
+                .flatMap(ProviderUtil::jsonValues)
+                .toArray();
+        List<Integer> arrays = Collections.singletonList(1);
+        Stream<Integer> stream = arrays.stream();
+        return stream.map(o -> objects);
+    }
+
+    public static Stream<Object[]> multiSource(YamlFileSource source){
+
+        Object[] objects = Stream.of(source.files())
+                .map(ProviderUtil::openInputStream)
+                .flatMap(ProviderUtil::yamlValues)
+                .toArray();
+        List<Integer> arrays = Collections.singletonList(1);
+        Stream<Integer> stream = arrays.stream();
+        return stream.map(o -> objects);
+    }
+
+    public static Stream<Object[]> multiSource(CsvFileSource source){
+
+        Object[] objects = Stream.of(source.files())
+                .map(ProviderUtil::openInputStream)
+                .flatMap(ProviderUtil::csvValues)
+                .toArray();
+        List<Integer> arrays = Collections.singletonList(1);
+        Stream<Integer> stream = arrays.stream();
+        return stream.map(o -> objects);
+    }
+
+    public static Stream<Object[]> multiSource(ValueSource source){
 
         List<Object> arrays = Stream.of(source.shorts(), source.bytes(), source.ints(), source.longs(), source.floats(), source.doubles(), source.chars(), source.booleans(), source.strings(), source.classes())
                 .filter((array) -> Array.getLength(array) > 0)

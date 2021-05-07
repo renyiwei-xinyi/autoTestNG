@@ -30,11 +30,11 @@ public class SetUpTearDown {
     @BeforeClass
     public void envSetUp() {
         //todo: env
-        String system = "env.properties";    //环境由filter配置
-        GetFileMess getFileMess = new GetFileMess();
-        RestAssured.baseURI = getFileMess.getValue("baseURI", system);
-        RestAssured.basePath = getFileMess.getValue("basePath", system);
-        RestAssured.port = Integer.parseInt(getFileMess.getValue("port", system));
+//        String system = "env.properties";    //环境由filter配置
+//        GetFileMess getFileMess = new GetFileMess();
+//        RestAssured.baseURI = getFileMess.getValue("baseURI", system);
+//        RestAssured.basePath = getFileMess.getValue("basePath", system);
+//        RestAssured.port = Integer.parseInt(getFileMess.getValue("port", system));
     }
 
     /*
@@ -42,15 +42,15 @@ public class SetUpTearDown {
      */
     @AfterSuite
     public void createEnvPropertiesForReport() {
-        Map<String, String> data = new HashMap<>();
-        String database = "db.properties";
-        GetFileMess getFileMess = new GetFileMess();
-        data.put("DatabaseLoginName", getFileMess.getValue("DP_Name", database));
-        data.put("DatabaseLoginPass", getFileMess.getValue("DP_Password", database));
-        data.put("DatabaseLoginIP", getFileMess.getValue("DP_IP", database));
-        data.put("baseURI", RestAssured.baseURI + ":" + RestAssured.port + "/" + RestAssured.basePath);
-
-        writePropertiesFile(data);
+//        Map<String, String> data = new HashMap<>();
+//        String database = "db.properties";
+//        GetFileMess getFileMess = new GetFileMess();
+//        data.put("DatabaseLoginName", getFileMess.getValue("DP_Name", database));
+//        data.put("DatabaseLoginPass", getFileMess.getValue("DP_Password", database));
+//        data.put("DatabaseLoginIP", getFileMess.getValue("DP_IP", database));
+//        data.put("baseURI", RestAssured.baseURI + ":" + RestAssured.port + "/" + RestAssured.basePath);
+//
+//        writePropertiesFile(data);
     }
 
     @AfterSuite

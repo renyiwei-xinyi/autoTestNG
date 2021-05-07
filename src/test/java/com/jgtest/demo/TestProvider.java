@@ -18,18 +18,16 @@ public class TestProvider extends BaseTestNG {
 
     @BeforeMethod(description = "参数化测试 数据前置处理")
     public void before_method(Object[] data) {
+
         Stream<Object> stream = Arrays.stream(data);
         stream.forEach(System.out::println);
     }
 
-    @AfterMethod
-    public void after_method(Object[] data, Method method, ITestResult result, ITestContext context){
-        if (method.isAnnotationPresent(CheckDataAll.class) || method.isAnnotationPresent(CheckData.class)){
+    //@AfterMethod
+    public void after_method(Object[] data, Method method, ITestResult result, ITestContext context) {
+        if (method.isAnnotationPresent(CheckDataAll.class) || method.isAnnotationPresent(CheckData.class)) {
             CheckDataAll checkDataAll = method.getDeclaredAnnotation(CheckDataAll.class);
             CheckData checkData = method.getDeclaredAnnotation(CheckData.class);
-            for ( Iterator<Object[]> json = ProviderUtil.getJson(checkData.jsonFiles()); json.hasNext();){
-                System.out.println(Arrays.toString(json.next()));
-            }
 
         }
 
@@ -47,51 +45,61 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @YamlFileSource(files = {
-            "src/main/resources/testcase/test.yaml",
-            "src/main/resources/testcase/test2.yaml"
-    })
+    @YamlFileSource(files = "src/main/resources/testcase/test.yaml")
     @Test(dataProvider = "single")
-    public void test_1729127(Object s) throws InterruptedException {
+    public void test_1729127(Object s, Object o) throws InterruptedException {
         System.out.println(s);
         Thread.sleep(1000);
     }
+
 
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
             "src/main/resources/testcase/test4.json"
     })
-    @Test(dataProvider = "parallel")
-    public void test_17123123(Object s) throws InterruptedException {
+    @Test(dataProvider = "single")
+    public void test_17123123(Object s, Object a) throws InterruptedException {
         System.out.println(s);
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
     }
 
-    @CsvFileSource(files = {
-            "src/main/resources/testcase/test6.csv"
-    })
-    @Test(dataProvider = "parallel")
-    public void test_1713123(Object s) throws InterruptedException {
-        System.out.println(JSONUtil.parseObj(s).getStr("4564654612132465461321213132131321313"));
+    @JsonFileSource(files = {
+            "src/main/resources/testcase/test3.json",
+            "src/main/resources/testcase/test4.json"},multi = true)
+    @JsonFileSource(files = {
+            "src/main/resources/testcase/test3.json",
+            "src/main/resources/testcase/test4.json"},multi = true)
+    @Test(dataProvider = "single")
+    public void test_1712312123123(Object s, Object a) throws InterruptedException {
         System.out.println(s);
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
     }
 
-    @CheckData(jsonFiles = "src/main/resources/testcase/test3.json")
     @ValueSource(ints = {1, 2})
     @Test(dataProvider = "single")
     public void test_12739(int a, int b) {
         System.out.println(a);
     }
 
-    @ValueSource(ints = {1, 2, 3},multi = false)
+    @CsvFileSource(files = {
+            "src/main/resources/testcase/test6.csv"
+    })
+    @Test(dataProvider = "single")
+    public void test_1713123(String s, String a) throws InterruptedException {
+        //System.out.println(JSONUtil.parseObj(s).getStr("title1"));
+        System.out.println(s);
+        //Thread.sleep(1000);
+    }
+
+
+    @ValueSource(ints = {1, 2, 3}, multi = false)
     @Test(dataProvider = "single")
     public void test_1273912(int a) {
         System.out.println(a);
     }
 
-    static class date{
-        void getTest(){
+    static class date {
+        void getTest() {
             System.out.println("nihao");
         }
     }
@@ -103,17 +111,17 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @ValueSource(ints = {1,2,3})
-    @ValueSource(ints = {1,2,3})
-    @Test(dataProvider = "single")
-    public void test_1728(Object a, Object b,Object c){
+    @ValueSource(ints = {1, 2, 3})
+    @ValueSource(ints = {2, 3, 4})
+    @Test(dataProvider = "single", invocationCount = 1)
+    public void test_1728(Object a, Object b, Object c) {
         System.out.println(a);
         //System.out.println(b);
     }
 
-    @ValueSource(ints = 1, booleans = true, multi = false)
+    @ValueSource(ints = 1, booleans = true, multi = true)
     @Test(dataProvider = "single")
-    public void test_12712339(int a){
+    public void test_12712339(Object a) {
         System.out.println(a);
         //不同的数据类型 数据驱动会 按照 迭代来进行; 设置 单参数的话 第二个数据类型会被跳过
         //System.out.println(b);
