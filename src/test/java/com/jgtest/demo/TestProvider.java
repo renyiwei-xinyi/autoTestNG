@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
+
 public class TestProvider extends BaseTestNG {
 
 
@@ -23,7 +24,7 @@ public class TestProvider extends BaseTestNG {
         stream.forEach(System.out::println);
     }
 
-    //@AfterMethod
+    @AfterMethod
     public void after_method(Object[] data, Method method, ITestResult result, ITestContext context) {
         if (method.isAnnotationPresent(CheckDataAll.class) || method.isAnnotationPresent(CheckData.class)) {
             CheckDataAll checkDataAll = method.getDeclaredAnnotation(CheckDataAll.class);
@@ -45,10 +46,11 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @YamlFileSource(files = "src/main/resources/testcase/test.yaml")
+    @YamlFileSource(files = "src/main/resources/testcase/test.yaml",multi = true)
     @Test(dataProvider = "single")
-    public void test_1729127(Object s, Object o) throws InterruptedException {
+    public void test_1729127(Object s, Object o,ITestContext context) throws InterruptedException {
         System.out.println(s);
+        System.out.println(context);
         Thread.sleep(1000);
     }
 
