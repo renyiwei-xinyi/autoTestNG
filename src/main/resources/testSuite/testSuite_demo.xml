@@ -9,9 +9,9 @@
 
     <test verbose="2" name="demo">
 
-        <classes>
-            <class name="com.jgtest.demo.TestProvider"/>
-        </classes>
+        <packages>
+            <package name="com.jgtest.demo"/>
+        </packages>
 
     </test>
 
