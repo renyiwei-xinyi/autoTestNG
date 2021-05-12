@@ -3,6 +3,7 @@ package com.jgtest.demo;
 import cn.hutool.json.JSONUtil;
 import com.jgtest.BaseTestNG;
 import com.jgtest.extension.*;
+import lombok.Data;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -11,6 +12,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Stream;
 
 
@@ -46,9 +48,9 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @YamlFileSource(files = "src/main/resources/testcase/test.yaml",multi = true)
+    @YamlFileSource(files = "src/main/resources/testcase/test.yaml", multi = true)
     @Test(dataProvider = "single")
-    public void test_1729127(Object s, Object o,ITestContext context) throws InterruptedException {
+    public void test_1729127(Object s, Object o, ITestContext context) throws InterruptedException {
         System.out.println(s);
         System.out.println(context);
         Thread.sleep(1000);
@@ -60,17 +62,17 @@ public class TestProvider extends BaseTestNG {
             "src/main/resources/testcase/test4.json"
     })
     @Test(dataProvider = "single")
-    public void test_17123123(Object s, Object a) throws InterruptedException {
+    public void test_17123123(Object s) {
         System.out.println(s);
         //Thread.sleep(1000);
     }
 
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
-            "src/main/resources/testcase/test4.json"},multi = true)
+            "src/main/resources/testcase/test4.json"}, multi = true)
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
-            "src/main/resources/testcase/test4.json"},multi = true)
+            "src/main/resources/testcase/test4.json"}, multi = true)
     @Test(dataProvider = "single")
     public void test_1712312123123(Object s, Object a) throws InterruptedException {
         System.out.println(s);
@@ -87,7 +89,7 @@ public class TestProvider extends BaseTestNG {
             "src/main/resources/testcase/test6.csv"
     })
     @Test(dataProvider = "single")
-    public void test_1713123(String s, String a) throws InterruptedException {
+    public void test_1713123(String s) {
         //System.out.println(JSONUtil.parseObj(s).getStr("title1"));
         System.out.println(s);
         //Thread.sleep(1000);
@@ -127,6 +129,31 @@ public class TestProvider extends BaseTestNG {
         System.out.println(a);
         //不同的数据类型 数据驱动会 按照 迭代来进行; 设置 单参数的话 第二个数据类型会被跳过
         //System.out.println(b);
+
+    }
+
+    @Data
+    static class DataAll {
+        public String touser;
+        public String toparty;
+        public String totag;
+        public String msgtype;
+        public int agentid;
+        public Context text;
+        public int safe;
+        public int enable_id_trans;
+        public int enable_duplicate_check;
+    }
+
+    @Data
+    static class Context {
+        public String content;
+    }
+
+    @JsonFileSource(files = "src/main/resources/testcase/demo.json", type = DataAll.class)
+    @Test(dataProvider = "single")
+    public void test_172317(DataAll dataAll) {
+        System.out.println(dataAll);
 
     }
 
