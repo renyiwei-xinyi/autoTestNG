@@ -13,4 +13,7 @@ public @interface CsvFileSource {
        可选参数 multi 为true时 多形参 单迭代 可重复注解实现多迭代；为false时 单形参  多迭代
      */
     boolean multi() default false;
+
+    Class<?> type() default Object.class;
+
 }
