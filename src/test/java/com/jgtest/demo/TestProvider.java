@@ -47,7 +47,7 @@ public class TestProvider extends BaseTestNG {
 
 
     @YamlFileSource(files = "src/main/resources/testcase/test.yaml",multi = true)
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_1729127(Object s, Object o,ITestContext context) throws InterruptedException {
         System.out.println(s);
         System.out.println(context);
@@ -59,7 +59,7 @@ public class TestProvider extends BaseTestNG {
             "src/main/resources/testcase/test3.json",
             "src/main/resources/testcase/test4.json"
     })
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_17123123(Object s, Object a) throws InterruptedException {
         System.out.println(s);
         //Thread.sleep(1000);
@@ -71,14 +71,14 @@ public class TestProvider extends BaseTestNG {
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
             "src/main/resources/testcase/test4.json"},multi = true)
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_1712312123123(Object s, Object a) throws InterruptedException {
         System.out.println(s);
         //Thread.sleep(1000);
     }
 
     @ValueSource(ints = {1, 2})
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_12739(int a, int b) {
         System.out.println(a);
     }
@@ -86,7 +86,7 @@ public class TestProvider extends BaseTestNG {
     @CsvFileSource(files = {
             "src/main/resources/testcase/test6.csv"
     })
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_1713123(String s, String a) throws InterruptedException {
         //System.out.println(JSONUtil.parseObj(s).getStr("title1"));
         System.out.println(s);
@@ -107,7 +107,7 @@ public class TestProvider extends BaseTestNG {
     }
 
     @ValueSource(classes = {date.class})
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_122339(Object a) {
         System.out.println(a);
     }
@@ -115,14 +115,14 @@ public class TestProvider extends BaseTestNG {
 
     @ValueSource(ints = {1, 2, 3})
     @ValueSource(ints = {2, 3, 4})
-    @Test(dataProvider = "single", invocationCount = 1)
+    @Test(dataProvider = "parallel", invocationCount = 1)
     public void test_1728(Object a, Object b, Object c) {
         System.out.println(a);
         //System.out.println(b);
     }
 
     @ValueSource(ints = 1, booleans = true, multi = true)
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "parallel")
     public void test_12712339(Object a) {
         System.out.println(a);
         //不同的数据类型 数据驱动会 按照 迭代来进行; 设置 单参数的话 第二个数据类型会被跳过

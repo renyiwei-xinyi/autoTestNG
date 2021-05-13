@@ -1,4 +1,4 @@
-package com.jgtest.demo;
+package com.jgtest.demo.test2;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;

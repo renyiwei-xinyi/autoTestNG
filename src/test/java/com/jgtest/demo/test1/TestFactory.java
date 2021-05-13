@@ -1,4 +1,4 @@
-package com.jgtest.demo;
+package com.jgtest.demo.test1;
 
 import org.testng.annotations.Factory;
 import org.testng.annotations.Test;

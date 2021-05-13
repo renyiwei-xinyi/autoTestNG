@@ -1,4 +1,4 @@
-package com.jgtest.demo;
+package com.jgtest.demo.test1.test222;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUnit;
@@ -10,14 +10,16 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import org.testng.annotations.Test;
 
+import java.util.HashSet;
+
 public class Tool {
 
-    private static final String URL = "";
+    private static final String URL = "http://jarvis.alipay.net/rtcenter/api/query/labList?pageNum=1&fuzzyQuery=FuncTest&pageSize=9999&testType=E2E&isMyLab=N&tenantCode=GC";
 
     @Test
     public void getData() {
         JSONArray list = new JSONArray();
-        JSONArray list2 = new JSONArray();
+        HashSet<Object> list2 = new HashSet<>();
 
         String s = HttpUtil.get(URL);
         JSONObject jsonObject = JSONUtil.parseObj(s);
@@ -32,11 +34,11 @@ public class Tool {
         });
         System.out.println(list.toStringPretty());
         FileWriter fileWriter = new FileWriter("lab.json");
-        FileWriter data = new FileWriter("data.json");
+        FileWriter data = new FileWriter("data.txt");
 
         fileWriter.write(list.toStringPretty());
-        data.write(list2.toStringPretty());
-
+        data.write(list2.toString());
+    // 测试
 
     }
 
