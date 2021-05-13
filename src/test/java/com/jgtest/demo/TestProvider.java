@@ -153,7 +153,7 @@ public class TestProvider extends BaseTestNG {
     @JsonFileSource(files = "src/main/resources/testcase/demo.json", type = DataAll.class)
     @Test(dataProvider = "single")
     public void test_172317(DataAll dataAll) {
-        System.out.println(dataAll);
+        System.out.println(JSONUtil.toJsonPrettyStr(dataAll));
 
     }
 
