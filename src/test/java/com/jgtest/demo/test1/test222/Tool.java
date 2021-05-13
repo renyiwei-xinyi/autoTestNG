@@ -14,7 +14,7 @@ import java.util.HashSet;
 
 public class Tool {
 
-    private static final String URL = "http://jarvis.alipay.net/rtcenter/api/query/labList?pageNum=1&fuzzyQuery=FuncTest&pageSize=9999&testType=E2E&isMyLab=N&tenantCode=GC";
+    private static final String URL = "";
 
     @Test
     public void getData() {

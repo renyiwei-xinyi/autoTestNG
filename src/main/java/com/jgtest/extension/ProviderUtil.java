@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -15,18 +16,8 @@ import java.util.stream.StreamSupport;
 
 public class ProviderUtil {
 
-    public static Yaml yaml = new Yaml();
-
-    public static ObjectMapper mapper = new ObjectMapper();
-
-    public static CsvMapper csvMapper = new CsvMapper();
-
-    public static CsvSchema schema = CsvSchema.emptySchema()
-            .withHeader()
-            .withColumnReordering(false);
-
-
     public static Iterator<Object[]> getJson(JsonFileSource source) {
+
         if (source.multi()) {
             // 多形参接收 多类型接收 二维数组模式
             return multiSource(source).iterator();
@@ -34,7 +25,7 @@ public class ProviderUtil {
             // 单形参接收 单类型接收 一维数组模式
             Stream<Object> objectStream = Arrays.stream(source.files())
                     .map(ProviderUtil::openInputStream)
-                    .flatMap(ProviderUtil::jsonValues);
+                    .flatMap(inputStream -> jsonValues(inputStream,source.type()));
 
             return new DataIterator(objectStream);
         }
@@ -56,7 +47,7 @@ public class ProviderUtil {
             // 单形参接收 单类型接收 一维数组模式
             Stream<Object> objectStream = Arrays.stream(source.files())
                     .map(ProviderUtil::openInputStream)
-                    .flatMap(ProviderUtil::yamlValues);
+                    .flatMap(inputStream -> yamlValues(inputStream, source.type()));
 
             return new DataIterator(objectStream);
         }
@@ -78,7 +69,7 @@ public class ProviderUtil {
             // 单形参接收 单类型接收 一维数组模式
             Stream<Object> objectStream = Arrays.stream(source.files())
                     .map(ProviderUtil::openInputStream)
-                    .flatMap(ProviderUtil::csvValues);
+                    .flatMap(inputStream -> Objects.requireNonNull(csvValues(inputStream, source.type())));
 
             return new DataIterator(objectStream);
         }
@@ -115,29 +106,35 @@ public class ProviderUtil {
         return source.iterator();
     }
 
-    public static Stream<Object> yamlValues(InputStream inputStream) {
+    public static Stream<Object> yamlValues(InputStream inputStream, Class<?> type) {
+        Yaml yaml = new Yaml(new Constructor(type));
         Iterable<Object> yamlObjects;
         yamlObjects = yaml.loadAll(inputStream);
         return getObjectStream(yamlObjects);
     }
 
-    public static Stream<Object> jsonValues(InputStream inputStream) {
+    public static Stream<Object> jsonValues(InputStream inputStream, Class<?> type) {
+        ObjectMapper mapper = new ObjectMapper();
         Object jsonObject = null;
         //为了处理Date属性，需要调用 findAndRegisterModules 方法
         mapper.findAndRegisterModules();
         try {
-            jsonObject = mapper.readValue(inputStream, Object.class);
+            jsonObject = mapper.readValue(inputStream, type);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return getObjectStream(jsonObject);
     }
 
-    public static Stream<Object> csvValues(InputStream inputStream) {
+    public static Stream<Object> csvValues(InputStream inputStream, Class<?> type) {
+        CsvMapper csvMapper = new CsvMapper();
+        CsvSchema schema = CsvSchema.emptySchema()
+                .withHeader()
+                .withColumnReordering(false);
         try {
 
             Iterator<Object> iterator = csvMapper
-                    .readerFor(Object.class)
+                    .readerFor(type)
                     .with(schema)
                     .readValues(inputStream)
                     .readAll()
@@ -156,7 +153,7 @@ public class ProviderUtil {
 
         Object[] objects = Stream.of(source.files())
                 .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::jsonValues)
+                .flatMap(inputStream -> jsonValues(inputStream, source.type()))
                 .toArray();
         List<Integer> arrays = Collections.singletonList(1);
         Stream<Integer> stream = arrays.stream();
@@ -167,7 +164,7 @@ public class ProviderUtil {
 
         Object[] objects = Stream.of(source.files())
                 .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::yamlValues)
+                .flatMap(inputStream -> yamlValues(inputStream, source.type()))
                 .toArray();
         List<Integer> arrays = Collections.singletonList(1);
         Stream<Integer> stream = arrays.stream();
@@ -178,7 +175,7 @@ public class ProviderUtil {
 
         Object[] objects = Stream.of(source.files())
                 .map(ProviderUtil::openInputStream)
-                .flatMap(ProviderUtil::csvValues)
+                .flatMap(inputStream -> csvValues(inputStream, source.type()))
                 .toArray();
         List<Integer> arrays = Collections.singletonList(1);
         Stream<Integer> stream = arrays.stream();

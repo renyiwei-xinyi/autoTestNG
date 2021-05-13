@@ -3,6 +3,7 @@ package com.jgtest.demo;
 import cn.hutool.json.JSONUtil;
 import com.jgtest.BaseTestNG;
 import com.jgtest.extension.*;
+import lombok.Data;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -11,6 +12,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Stream;
 
 
@@ -67,7 +69,7 @@ public class TestProvider extends BaseTestNG {
 
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
-            "src/main/resources/testcase/test4.json"},multi = true)
+            "src/main/resources/testcase/test4.json"}, multi = true)
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
             "src/main/resources/testcase/test4.json"},multi = true)
@@ -127,6 +129,31 @@ public class TestProvider extends BaseTestNG {
         System.out.println(a);
         //不同的数据类型 数据驱动会 按照 迭代来进行; 设置 单参数的话 第二个数据类型会被跳过
         //System.out.println(b);
+
+    }
+
+    @Data
+    static class DataAll {
+        public String touser;
+        public String toparty;
+        public String totag;
+        public String msgtype;
+        public int agentid;
+        public Context text;
+        public int safe;
+        public int enable_id_trans;
+        public int enable_duplicate_check;
+    }
+
+    @Data
+    static class Context {
+        public String content;
+    }
+
+    @JsonFileSource(files = "src/main/resources/testcase/demo.json", type = DataAll.class)
+    @Test(dataProvider = "single")
+    public void test_172317(DataAll dataAll) {
+        System.out.println(dataAll);
 
     }
 
