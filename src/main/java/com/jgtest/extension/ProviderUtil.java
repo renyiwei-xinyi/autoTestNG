@@ -1,8 +1,7 @@
 package com.jgtest.extension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.jgtest.utils.CsvUtils;
+import com.jgtest.utils.JsonUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -107,35 +106,27 @@ public class ProviderUtil {
     }
 
     public static Stream<Object> yamlValues(InputStream inputStream, Class<?> type) {
-        Yaml yaml = new Yaml(new Constructor(type));
+        Constructor constructor = new Constructor(type);
+        Yaml yaml = new Yaml(constructor);
         Iterable<Object> yamlObjects;
         yamlObjects = yaml.loadAll(inputStream);
         return getObjectStream(yamlObjects);
     }
 
     public static Stream<Object> jsonValues(InputStream inputStream, Class<?> type) {
-        ObjectMapper mapper = new ObjectMapper();
-        Object jsonObject = null;
-        //为了处理Date属性，需要调用 findAndRegisterModules 方法
-        mapper.findAndRegisterModules();
-        try {
-            jsonObject = mapper.readValue(inputStream, type);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Object jsonObject = JsonUtils.readValue(inputStream, type);
+
         return getObjectStream(jsonObject);
     }
 
     public static Stream<Object> csvValues(InputStream inputStream, Class<?> type) {
-        CsvMapper csvMapper = new CsvMapper();
-        CsvSchema schema = CsvSchema.emptySchema()
-                .withHeader()
-                .withColumnReordering(false);
+
         try {
 
-            Iterator<Object> iterator = csvMapper
+            Iterator<Object> iterator = CsvUtils.csvMapper
                     .readerFor(type)
-                    .with(schema)
+                    .with(CsvUtils.schema)
                     .readValues(inputStream)
                     .readAll()
                     .iterator();
