@@ -1,18 +1,14 @@
 package com.jgtest.common;
 
 
-import io.restassured.RestAssured;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
-import com.jgtest.utils.GetFileMess;
+import com.jgtest.provider.ParameterContext;
+import com.jgtest.provider.ResponseContext;
+import com.jgtest.provider.WorkContext;
+import org.testng.ITestContext;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.jgtest.utils.WritePropertiesUtil.writePropertiesFile;
 
 
 /*
@@ -57,6 +53,15 @@ public class SetUpTearDown {
     public void dataTearDown() throws SQLException, IOException, ClassNotFoundException {
         //案例执行结束后，对数据池的数据进行清理（删除或更新状态）
         //todo: 执行后置sql
+    }
+
+    @AfterTest
+    public void clearContext(ITestContext context){
+        // 每个测试计划结束 上下文初始化
+        context.removeAttribute(ParameterContext.class.getName());
+        context.removeAttribute(ResponseContext.class.getName());
+        context.removeAttribute(WorkContext.class.getName());
+
     }
 
 }

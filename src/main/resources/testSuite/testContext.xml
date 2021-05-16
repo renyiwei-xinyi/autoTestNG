@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="自动化测试">
+
+    <listeners>
+        <!--失败重跑-->
+        <listener class-name="com.jgtest.listener.FailedRetryListener"/>
+    </listeners>
+
+    <test verbose="1" name="demo" parallel="false" thread-count="20" preserve-order="true">
+
+        <classes>
+            <class name="com.jgtest.demo.test2.TestTestNG"/>
+            <class name="com.jgtest.demo.test2.TestContext"/>
+        </classes>
+    </test>
+
+</suite>

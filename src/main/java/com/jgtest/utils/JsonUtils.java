@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonUtils {
 
@@ -57,7 +59,7 @@ public class JsonUtils {
      * @param obj 对象
      * @return Json格式字符串
      */
-    public static <T> String parseObj(T obj) {
+    public static <T> String parseObj2Str(T obj) {
         if (obj == null) {
             return null;
         }
@@ -74,7 +76,7 @@ public class JsonUtils {
      * @param obj 对象
      * @return 美化的Json格式字符串
      */
-    public static <T> String parseObjPretty(T obj) {
+    public static <T> String parseObj2PrettyStr(T obj) {
         if (obj == null) {
             return null;
         }
@@ -84,6 +86,17 @@ public class JsonUtils {
             LOGGER.warn("Parse Object to String error : {}", e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 对象转换map对象
+     * @param obj 对象
+     * @return map对象
+     */
+    public static Map<String, Object> parseObj2Map(Object obj){
+        String s = parseObj2Str(obj);
+        Map<String, Object> hashMap = readValue(s, HashMap.class);
+        return hashMap;
     }
 
     /**

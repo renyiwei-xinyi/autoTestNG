@@ -1,19 +1,15 @@
 package com.jgtest.demo.test2;
 
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.jgtest.BaseTestNG;
 import com.jgtest.extension.JsonFileSource;
+import com.jgtest.provider.ParameterContext;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.annotations.*;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 
 public class TestTestNG extends BaseTestNG {
@@ -29,13 +25,13 @@ public class TestTestNG extends BaseTestNG {
     @JsonFileSource(files = "src/main/resources/testcase/test3.json")
     @Test(dataProvider = "single")
     public void test_d_137129(Object o ,ITestContext context){
-        context.setAttribute("request", o);
+        context.setAttribute(ParameterContext.class.getName(), o);
     }
 
     @Test(dependsOnMethods = "test_d_137129")
     public void test_b_1379(ITestContext context){
-        Object request = context.getAttribute("request");
-        String test = JSONUtil.parseObj(request).getStr("test");
+        Object contextAttribute = context.getAttribute(ParameterContext.class.getName());
+        String test = JSONUtil.parseObj(contextAttribute).getStr("test");
         System.out.println(test);
         Assert.assertEquals(test,"111","上下文中获取字段内容失败！！！");
     }
@@ -44,7 +40,7 @@ public class TestTestNG extends BaseTestNG {
     @Test
     public void test_a_1379(ITestContext context){
         ITestNGMethod[] allTestMethods = context.getAllTestMethods();
-        System.out.println(Arrays.asList(allTestMethods));
+        Arrays.stream(allTestMethods).forEach(System.out::println);
 
     }
 

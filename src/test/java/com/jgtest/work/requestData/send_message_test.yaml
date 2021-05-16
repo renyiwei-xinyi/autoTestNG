@@ -1,0 +1,26 @@
+---
+story:
+testDate:
+  touser: '@all'
+  toparty: 'PartyID1|PartyID2'
+  totag: 'TagID1 | TagID2'
+  msgtype: 'text'
+  agentid: 1000002
+  text:
+    content: '自动化测试。出发前可查看<a href="http://work.weixin.qq.com">邮件中心视频实况</a>，聪明避开排队。'
+  safe: 0
+  enable_id_trans: 0
+  enable_duplicate_check: 0
+---
+story:
+testDate:
+  touser: '@all'
+  toparty: 'PartyID1|PartyID2'
+  totag: 'TagID1 | TagID2'
+  msgtype: 'text'
+  agentid: 1000002
+  text:
+    content: '再见了妈妈，腾讯是傻逼！'
+  safe: 0
+  enable_id_trans: 0
+  enable_duplicate_check: 0
