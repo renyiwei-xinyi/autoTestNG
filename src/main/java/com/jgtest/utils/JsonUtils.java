@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +25,8 @@ public class JsonUtils {
     // 日起格式化
     private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
     static {
+        // 添加模块 反序列化错误时 添加成功反序列化 成功
+        objectMapper.registerModule(new ParanamerModule());
         //为了处理Date属性，需要调用 findAndRegisterModules 方法
         objectMapper.findAndRegisterModules();
         //对象的所有字段全部列入
@@ -189,7 +192,9 @@ public class JsonUtils {
         try {
             FileInputStream inputStream = new FileInputStream(path);
 
-            return objectMapper.readValue(inputStream, Object.class).toString();
+            Object o = objectMapper.readValue(inputStream, Object.class);
+
+            return objectMapper.writeValueAsString(o);
 
         } catch (IOException e) {
             LOGGER.warn("read file to Object error : {}" + e.getMessage());
