@@ -44,6 +44,26 @@ public class TestTestNG extends BaseTestNG {
 
     }
 
+    @Test(timeOut = 5000)
+    public void test_z_1317() throws InterruptedException {
+        int i = 0;
+        while (true) {
+            Thread.sleep(250); // custom poll interval 5000 / 250 = 20 time
+
+            i++;
+            if (i == 5){
+                continue;// 终止本次执行 继续下个执行
+            }else {
+                System.out.println("sleep");
+            }
+            if (i == 10){
+                break;// 跳出循环
+            }
+        }
+        return; // 结束方法
+        // Obtain the asynchronous result and perform assertions
+    }
+
 
 
 }
