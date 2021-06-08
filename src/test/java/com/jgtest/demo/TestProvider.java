@@ -88,8 +88,8 @@ public class TestProvider extends BaseTestNG {
     @CsvFileSource(files = {
             "src/main/resources/testcase/test6.csv"
     })
-    @Test(dataProvider = "parallel")
-    public void test_1713123(String s, String a) throws InterruptedException {
+    @Test(dataProvider = "single")
+    public void test_1713123(Object s) {
         //System.out.println(JSONUtil.parseObj(s).getStr("title1"));
         System.out.println(s);
         //Thread.sleep(1000);
