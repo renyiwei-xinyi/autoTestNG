@@ -1,0 +1,2 @@
+# autoTestNG
+autotest project testNG
