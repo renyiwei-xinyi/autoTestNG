@@ -17,13 +17,13 @@ import java.sql.SQLException;
  */
 public class SetUpTearDown {
 
-    @BeforeSuite
+    //@BeforeSuite
     public void dataSetUp() {
         //todo: 执行前置sql
     }
 
     //环境配置
-    @BeforeClass
+    //@BeforeClass
     public void envSetUp() {
         //todo: env
 //        String system = "env.properties";    //环境由filter配置
@@ -36,7 +36,7 @@ public class SetUpTearDown {
     /*
      *创建environment.properties并放到allure-results目录下，测试报告展现
      */
-    @AfterSuite
+    //@AfterSuite
     public void createEnvPropertiesForReport() {
 //        Map<String, String> data = new HashMap<>();
 //        String database = "db.properties";
@@ -49,13 +49,13 @@ public class SetUpTearDown {
 //        writePropertiesFile(data);
     }
 
-    @AfterSuite
+    //@AfterSuite
     public void dataTearDown() throws SQLException, IOException, ClassNotFoundException {
         //案例执行结束后，对数据池的数据进行清理（删除或更新状态）
         //todo: 执行后置sql
     }
 
-    @AfterTest
+    //@AfterTest
     public void clearContext(ITestContext context){
         // 每个测试计划结束 上下文初始化
         context.removeAttribute(ParameterContext.class.getName());
