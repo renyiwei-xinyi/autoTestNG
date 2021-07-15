@@ -2,12 +2,10 @@ package com.jgtest.demo;
 
 import cn.hutool.core.lang.Console;
 import com.jgtest.BaseTestNG;
-import com.jgtest.extension.YamlFileSource;
 import org.testng.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -47,13 +45,21 @@ public class TestPy extends BaseTestNG {
         System.out.println("123123");
     }
 
-    @Test
+    @Test()
     public void test_137197(){
-        String s = "2021-07-06 05:12:22.782697";
-        int length = s.length();
-        System.out.println(length);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSS");
-        LocalDateTime accItemGmtCreate = LocalDateTime.parse("2021-07-06 03:05:59.99236", dateTimeFormatter);
-        System.out.println(accItemGmtCreate);
+        String formatter = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+
+        String accGmtCreate = "2021-07-06 05:12:22.71311";
+        String insGmtCreate = "2021-07-06 05:12:22.0";
+
+
+        String accFormatter = formatter.substring(0, accGmtCreate.length());
+        String insFormatter = formatter.substring(0, insGmtCreate.length());
+        System.out.println(accFormatter);
+        System.out.println(insFormatter);
+        LocalDateTime accItemGmtCreate = LocalDateTime.parse(accGmtCreate, DateTimeFormatter.ofPattern(accFormatter));
+        LocalDateTime instItemGmtCreate = LocalDateTime.parse(insGmtCreate, DateTimeFormatter.ofPattern(insFormatter));
+
+        System.out.println(accItemGmtCreate.compareTo(instItemGmtCreate) > 0);
     }
 }
