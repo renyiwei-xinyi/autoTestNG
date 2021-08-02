@@ -8,7 +8,6 @@
     </listeners>
 
     <test verbose="1" name="demo" parallel="false" thread-count="20" preserve-order="true">
-
         <classes>
             <class name="com.jgtest.demo.test2.TestTestNG"/>
             <class name="com.jgtest.demo.test2.TestContext"/>

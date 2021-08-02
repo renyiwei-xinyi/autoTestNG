@@ -23,12 +23,12 @@ public class TestTestNG extends BaseTestNG {
     }
 
     @JsonFileSource(files = "src/main/resources/testcase/test3.json")
-    @Test(dataProvider = "single")
+    @Test(dataProvider = "single", groups = {"TestTestNG"})
     public void test_d_137129(Object o ,ITestContext context){
         context.setAttribute(ParameterContext.class.getName(), o);
     }
 
-    @Test(dependsOnMethods = "test_d_137129")
+    @Test(dependsOnMethods = "test_d_137129", groups = {"TestTestNG"})
     public void test_b_1379(ITestContext context){
         Object contextAttribute = context.getAttribute(ParameterContext.class.getName());
         String test = JSONUtil.parseObj(contextAttribute).getStr("test");
@@ -44,7 +44,7 @@ public class TestTestNG extends BaseTestNG {
 
     }
 
-    @Test(timeOut = 5000)
+    @Test(timeOut = 5000, groups = {"TestTestNG"})
     public void test_z_1317() throws InterruptedException {
         int i = 0;
         while (true) {

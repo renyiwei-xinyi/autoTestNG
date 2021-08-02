@@ -1,0 +1,24 @@
+# suite name
+name: SingleSuite
+# suite thread-count
+threadCount: 4
+# suite parameters
+#parameters: { n: 42 }
+
+# test group
+tests:
+  # test name
+  - name: Regression2
+    # test parameters
+#     parameters: { count: 10 }
+    # group exclude
+#    excludedGroups: [ broken ]
+    # test class
+#    classes:
+#      - com.jgtest.demo.test2.TestTestNG
+#      - com.jgtest.demo.test2.TestContext
+
+    packages:
+      - name: com.jgtest.demo.test2
+        exclude: [com.jgtest.demo.test2.TestTestNG]
+
