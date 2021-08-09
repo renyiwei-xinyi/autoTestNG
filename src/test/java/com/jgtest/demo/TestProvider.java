@@ -19,14 +19,14 @@ import java.util.stream.Stream;
 public class TestProvider extends BaseTestNG {
 
 
-    @BeforeMethod(description = "参数化测试 数据前置处理")
+    //@BeforeMethod(description = "参数化测试 数据前置处理")
     public void before_method(Object[] data) {
 
         Stream<Object> stream = Arrays.stream(data);
         stream.forEach(System.out::println);
     }
 
-    @AfterMethod
+    //@AfterMethod
     public void after_method(Object[] data, Method method, ITestResult result, ITestContext context) {
         if (method.isAnnotationPresent(CheckDataAll.class) || method.isAnnotationPresent(CheckData.class)) {
             CheckDataAll checkDataAll = method.getDeclaredAnnotation(CheckDataAll.class);
@@ -48,9 +48,9 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @YamlFileSource(files = "src/main/resources/testcase/test.yaml",multi = true)
+    @YamlFileSource(files = "src/main/resources/testcase/test.yaml")
     @Test(dataProvider = "parallel")
-    public void test_1729127(Object s, Object o,ITestContext context) throws InterruptedException {
+    public void test_1729127(Object s, Object o, ITestContext context) throws InterruptedException {
         System.out.println(s);
         System.out.println(context);
         Thread.sleep(1000);
@@ -62,19 +62,19 @@ public class TestProvider extends BaseTestNG {
             "src/main/resources/testcase/test4.json"
     })
     @Test(dataProvider = "parallel")
-    public void test_17123123(Object s, Object a) throws InterruptedException {
+    public void test_17123123(Object s, Object a) {
         System.out.println(s);
         //Thread.sleep(1000);
     }
 
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
-            "src/main/resources/testcase/test4.json"}, multi = true)
+            "src/main/resources/testcase/test4.json"})
     @JsonFileSource(files = {
             "src/main/resources/testcase/test3.json",
-            "src/main/resources/testcase/test4.json"},multi = true)
+            "src/main/resources/testcase/test4.json"})
     @Test(dataProvider = "parallel")
-    public void test_1712312123123(Object s, Object a) throws InterruptedException {
+    public void test_1712312123123(Object s, Object a) {
         System.out.println(s);
         //Thread.sleep(1000);
     }
@@ -96,7 +96,7 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @ValueSource(ints = {1, 2, 3}, multi = false)
+    @ValueSource(ints = {1, 2, 3})
     @Test(dataProvider = "single")
     public void test_1273912(int a) {
         System.out.println(a);
@@ -123,7 +123,7 @@ public class TestProvider extends BaseTestNG {
         //System.out.println(b);
     }
 
-    @ValueSource(ints = 1, booleans = true, multi = true)
+    @ValueSource(ints = 1, booleans = true)
     @Test(dataProvider = "parallel")
     public void test_12712339(Object a) {
         System.out.println(a);
@@ -150,9 +150,33 @@ public class TestProvider extends BaseTestNG {
         public String content;
     }
 
-    @JsonFileSource(files = "src/main/resources/testcase/demo.json", type = DataAll.class)
+    @JsonFileSource(files = {
+            "src/main/resources/testcase/demo.json",
+            "src/main/resources/testcase/demo.json"})
     @Test(dataProvider = "single")
-    public void test_172317(DataAll dataAll) {
+    public void test_172317(DataAll dataAll, DataAll context) {
+        System.out.println(JSONUtil.toJsonPrettyStr(dataAll));
+        System.out.println(JSONUtil.toJsonPrettyStr(context));
+
+    }
+
+    @JsonFileSource(files = {
+            "src/main/resources/testcase/demo.json",
+            "src/main/resources/testcase/demo.json"})
+    @JsonFileSource(files = {
+            "src/main/resources/testcase/demo.json",
+            "src/main/resources/testcase/demo.json"})
+    @Test(dataProvider = "single")
+    public void test_172317123121231123223(DataAll dataAll, DataAll context) {
+        System.out.println(JSONUtil.toJsonPrettyStr(dataAll));
+        System.out.println(JSONUtil.toJsonPrettyStr(context));
+
+    }
+
+
+    @JsonFileSource(files = "src/main/resources/testcase/demo.json")
+    @Test(dataProvider = "single")
+    public void test_172123223(DataAll dataAll) {
         System.out.println(JSONUtil.toJsonPrettyStr(dataAll));
 
     }

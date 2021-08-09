@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 public class TestPy extends BaseTestNG {
@@ -147,6 +150,22 @@ public class TestPy extends BaseTestNG {
 //        strings.add(a);
         strings.add(s);
         System.out.println(strings);
+
+    }
+
+    @Test
+    public void test_212378917(){
+        Integer[] inputArray = new Integer[]{1, 3, 5, 7, 9};
+        Integer[] out = new Integer[inputArray.length-1];
+        //方法一 index就是自增索引
+        AtomicInteger index=new AtomicInteger(0);
+
+        List<Integer> collect1 = Arrays.stream(inputArray).map(x -> x + index.getAndIncrement()).collect(Collectors.toList());
+        System.out.println(collect1);
+
+        //方法二
+        List<Integer> collect = IntStream.range(0, inputArray.length).mapToObj(x -> inputArray[x]).collect(Collectors.toList());
+        System.out.println(collect);
 
     }
 }

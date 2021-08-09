@@ -167,7 +167,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(inputStream, javaType);
         } catch (IOException e) {
-            LOGGER.warn("Parse String to Object error : {}" + e.getMessage());
+            LOGGER.warn("Parse Object to Object error : {}" + e.getMessage());
             return null;
         }
     }
@@ -184,7 +184,7 @@ public class JsonUtils {
     }
 
     /**
-     * 读取json文件解析为string对象
+     * 读取json文件解析为JsonString对象
      * @param path
      * @return
      */
