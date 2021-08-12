@@ -69,7 +69,7 @@ public class JsonUtils {
         try {
             return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            LOGGER.warn("Parse Object to String error : {}", e.getMessage());
+            LOGGER.warn("Parse Object to String error : {} ", e.getMessage());
             return null;
         }
     }
@@ -86,7 +86,7 @@ public class JsonUtils {
         try {
             return obj instanceof String ? (String) obj : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            LOGGER.warn("Parse Object to String error : {}", e.getMessage());
+            LOGGER.warn("Parse Object to String error : {} ", e.getMessage());
             return null;
         }
     }
@@ -115,7 +115,7 @@ public class JsonUtils {
         try {
             return clazz.equals(String.class) ? (T) str : objectMapper.readValue(str, clazz);
         } catch (Exception e) {
-            LOGGER.warn("Parse String to Object error : {}", e.getMessage());
+            LOGGER.warn("Parse String to Object error : {} ", e.getMessage());
             return null;
         }
     }
@@ -150,7 +150,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(str, javaType);
         } catch (IOException e) {
-            LOGGER.warn("Parse String to Object error : {}" + e.getMessage());
+            LOGGER.warn("Parse String to Object error : {} " + e.getMessage());
             return null;
         }
     }
@@ -167,7 +167,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(inputStream, javaType);
         } catch (IOException e) {
-            LOGGER.warn("Parse Object to Object error : {}" + e.getMessage());
+            LOGGER.warn("Parse Object to Object error : {} " + e.getMessage());
             return null;
         }
     }
@@ -178,7 +178,7 @@ public class JsonUtils {
         try {
             return objectMapper.readValue(inputStream, type);
         } catch (IOException e) {
-            LOGGER.warn("read input stream to Object error : {}" + e.getMessage());
+            LOGGER.warn("read input stream to Object error : {} " + e.getMessage());
         }
         return null;
     }
@@ -197,7 +197,7 @@ public class JsonUtils {
             return objectMapper.writeValueAsString(o);
 
         } catch (IOException e) {
-            LOGGER.warn("read file to Object error : {}" + e.getMessage());
+            LOGGER.warn("read file to Object error : {} " + e.getMessage());
         }
         return null;
 
@@ -214,7 +214,7 @@ public class JsonUtils {
 
             return objectMapper.readValue(inputStream, type);
         } catch (IOException e) {
-            LOGGER.warn("read file to Object error : {}" + e.getMessage());
+            LOGGER.warn("read file to Object error : {} " + e.getMessage());
         }
         return null;
 
@@ -235,7 +235,7 @@ public class JsonUtils {
             OutputStream outputStream = new FileOutputStream(path);
             objectMapper.writeValue(outputStream, obj);
         } catch (IOException e) {
-            LOGGER.warn("write file to Object error : {}" + e.getMessage());
+            LOGGER.warn("write file to Object error : {} " + e.getMessage());
         }
 
     }
