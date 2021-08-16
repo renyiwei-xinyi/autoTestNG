@@ -1,5 +1,7 @@
 package com.jgtest.extension;
 
+import com.alibaba.fastjson.JSON;
+import com.jgtest.exception.TestException;
 import com.jgtest.utils.CsvUtils;
 import com.jgtest.utils.JsonUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -17,39 +19,39 @@ import java.util.stream.StreamSupport;
 
 public class ProviderUtil {
 
-    public static Iterator<Object[]> getFileSource(Method method){
+    public static Iterator<Object[]> getFileSource(Method method) {
         //  注解不能共存
         // todo: 实现注解可以共存 可以随意组合注解 形成一套参数 注入到用例中
 
-        if (method.isAnnotationPresent(JsonFileSource.class)){
+        if (method.isAnnotationPresent(JsonFileSource.class)) {
             JsonFileSource source = method.getDeclaredAnnotation(JsonFileSource.class);
             return ProviderUtil.getSource(source, method);
         }
-        if (method.isAnnotationPresent(JsonFileSources.class)){
+        if (method.isAnnotationPresent(JsonFileSources.class)) {
             JsonFileSources source = method.getDeclaredAnnotation(JsonFileSources.class);
             return ProviderUtil.getMultiSource(source, method);
         }
-        if (method.isAnnotationPresent(YamlFileSource.class)){
+        if (method.isAnnotationPresent(YamlFileSource.class)) {
             YamlFileSource source = method.getDeclaredAnnotation(YamlFileSource.class);
             return ProviderUtil.getSource(source, method);
         }
-        if (method.isAnnotationPresent(YamlFileSources.class)){
+        if (method.isAnnotationPresent(YamlFileSources.class)) {
             YamlFileSources source = method.getDeclaredAnnotation(YamlFileSources.class);
             return ProviderUtil.getMultiSource(source, method);
         }
-        if (method.isAnnotationPresent(CsvFileSource.class)){
+        if (method.isAnnotationPresent(CsvFileSource.class)) {
             CsvFileSource source = method.getDeclaredAnnotation(CsvFileSource.class);
             return ProviderUtil.getSource(source, method);
         }
-        if (method.isAnnotationPresent(CsvFileSources.class)){
+        if (method.isAnnotationPresent(CsvFileSources.class)) {
             CsvFileSources source = method.getDeclaredAnnotation(CsvFileSources.class);
             return ProviderUtil.getMultiSource(source, method);
         }
-        if (method.isAnnotationPresent(ValueSource.class)){
+        if (method.isAnnotationPresent(ValueSource.class)) {
             ValueSource source = method.getDeclaredAnnotation(ValueSource.class);
             return ProviderUtil.getSource(source);
         }
-        if (method.isAnnotationPresent(ValueSources.class)){
+        if (method.isAnnotationPresent(ValueSources.class)) {
             ValueSources source = method.getDeclaredAnnotation(ValueSources.class);
             return ProviderUtil.getMultiSource(source);
         }
@@ -81,9 +83,17 @@ public class ProviderUtil {
 
         Class<?>[] parameterTypes = method.getParameterTypes();
 
-        Stream<Object> objectStream = multiSource(source, parameterTypes);
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
 
-        boolean multi = parameterTypes.length >= source.files().length;
+        boolean multi = parameterTypes.length == source.files().length;
+
+        if (!multi) {
+            throw new TestException("形参和数据不一致！");
+        }
+
+        Stream<Object> objectStream = multiSource(source, parameterTypes);
 
         return getIterator(objectStream, multi);
     }
@@ -92,9 +102,13 @@ public class ProviderUtil {
 
         Class<?>[] parameterTypes = method.getParameterTypes();
 
-        Stream<Object> objectStream = multiSource(source, parameterTypes);
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
 
-        boolean multi = parameterTypes.length >= source.files().length;
+        boolean multi = parameterTypes.length > 1;
+
+        Stream<Object> objectStream = multiSource(source, parameterTypes, multi);
 
         return getIterator(objectStream, multi);
     }
@@ -103,11 +117,19 @@ public class ProviderUtil {
 
         Class<?>[] parameterTypes = method.getParameterTypes();
 
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
+
+        boolean multi = parameterTypes.length == source.files().length;
+
+        if (!multi) {
+            throw new TestException("形参和数据不一致！");
+        }
+
         Stream<Object> objectStream = multiSource(source, parameterTypes);
 
-        boolean multi = parameterTypes.length >= source.files().length;
-
-        return getIterator(objectStream, multi);
+        return getIterator(objectStream, true);
     }
 
     public static Iterator<Object[]> getSource(ValueSource source) {
@@ -134,9 +156,15 @@ public class ProviderUtil {
      */
     public static Iterator<Object[]> getMultiSource(JsonFileSources sources, Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
+
+        boolean multi = parameterTypes.length > 1;
+        Class<?>[] finalParameterTypes = parameterTypes;
         Stream<Object[]> source = Stream.of(sources.value())
                 .flatMap(source1 -> {
-                    Stream<Object> objectStream = multiSource(source1, parameterTypes);
+                    Stream<Object> objectStream = multiSource(source1, finalParameterTypes);
 
                     return Stream.of(1).map(o -> objectStream.toArray());
                 });
@@ -146,9 +174,15 @@ public class ProviderUtil {
 
     public static Iterator<Object[]> getMultiSource(YamlFileSources sources, Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
+
+        boolean multi = parameterTypes.length > 1;
+        Class<?>[] finalParameterTypes = parameterTypes;
         Stream<Object[]> source = Stream.of(sources.value())
                 .flatMap(source1 -> {
-                    Stream<Object> objectStream = multiSource(source1, parameterTypes);
+                    Stream<Object> objectStream = multiSource(source1, finalParameterTypes, multi);
 
                     return Stream.of(1).map(o -> objectStream.toArray());
                 });
@@ -158,9 +192,15 @@ public class ProviderUtil {
 
     public static Iterator<Object[]> getMultiSource(CsvFileSources sources, Method method) {
         Class<?>[] parameterTypes = method.getParameterTypes();
+        parameterTypes = Stream.of(parameterTypes)
+                .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
+                .toArray(Class<?>[]::new);
+
+        boolean multi = parameterTypes.length > 1;
+        Class<?>[] finalParameterTypes = parameterTypes;
         Stream<Object[]> source = Stream.of(sources.value())
                 .flatMap(source1 -> {
-                    Stream<Object> objectStream = multiSource(source1, parameterTypes);
+                    Stream<Object> objectStream = multiSource(source1, finalParameterTypes);
 
                     return Stream.of(1).map(o -> objectStream.toArray());
                 });
@@ -192,8 +232,12 @@ public class ProviderUtil {
                 .flatMap(inputStream -> jsonValues(inputStream, parameterTypes[index.getAndIncrement()]));
     }
 
-    public static Stream<Object> multiSource(YamlFileSource source, Class<?>[] parameterTypes) {
-
+    public static Stream<Object> multiSource(YamlFileSource source, Class<?>[] parameterTypes, boolean multi) {
+        if (!multi) {
+            return Stream.of(source.files())
+                    .map(ProviderUtil::openInputStream)
+                    .flatMap(inputStream -> yamlValues(inputStream, parameterTypes[0]));
+        }
         // 用 index 就是自增索引
         AtomicInteger index = new AtomicInteger(0);
 
@@ -277,8 +321,12 @@ public class ProviderUtil {
     }
 
     public static Stream<Object> jsonValues(InputStream inputStream, Class<?> type) {
-
-        Object jsonObject = JsonUtils.readValue(inputStream, type);
+        Object jsonObject = null;
+        try {
+            jsonObject = JSON.parseObject(inputStream, type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return getObjectStream(jsonObject);
     }

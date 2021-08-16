@@ -48,9 +48,12 @@ public class TestProvider extends BaseTestNG {
     }
 
 
-    @YamlFileSource(files = "src/main/resources/testcase/test.yaml")
+    @YamlFileSource(files = {
+            "src/main/resources/testcase/test.yaml",
+            "src/main/resources/testcase/test.yaml"
+    })
     @Test(dataProvider = "parallel")
-    public void test_1729127(Object s, Object o, ITestContext context) throws InterruptedException {
+    public void test_1729127(Object s, ITestContext context) throws InterruptedException {
         System.out.println(s);
         System.out.println(context);
         Thread.sleep(1000);
@@ -62,8 +65,9 @@ public class TestProvider extends BaseTestNG {
             "src/main/resources/testcase/test4.json"
     })
     @Test(dataProvider = "parallel")
-    public void test_17123123(Object s, Object a) {
+    public void test_17123123(Object s,Object a, ITestContext context) {
         System.out.println(s);
+        System.out.println(a);
         //Thread.sleep(1000);
     }
 
