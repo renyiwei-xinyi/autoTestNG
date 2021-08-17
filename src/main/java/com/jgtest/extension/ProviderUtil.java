@@ -160,10 +160,14 @@ public class ProviderUtil {
                 .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
                 .toArray(Class<?>[]::new);
 
-        boolean multi = parameterTypes.length > 1;
         Class<?>[] finalParameterTypes = parameterTypes;
         Stream<Object[]> source = Stream.of(sources.value())
                 .flatMap(source1 -> {
+                    boolean multi = finalParameterTypes.length == source1.files().length;
+
+                    if (!multi) {
+                        throw new TestException("形参和数据不一致！");
+                    }
                     Stream<Object> objectStream = multiSource(source1, finalParameterTypes);
 
                     return Stream.of(1).map(o -> objectStream.toArray());
@@ -196,10 +200,16 @@ public class ProviderUtil {
                 .filter(aClass -> !aClass.getName().equals("org.testng.ITestContext"))
                 .toArray(Class<?>[]::new);
 
-        boolean multi = parameterTypes.length > 1;
         Class<?>[] finalParameterTypes = parameterTypes;
         Stream<Object[]> source = Stream.of(sources.value())
                 .flatMap(source1 -> {
+
+                    boolean multi = finalParameterTypes.length == source1.files().length;
+
+                    if (!multi) {
+                        throw new TestException("形参和数据不一致！");
+                    }
+
                     Stream<Object> objectStream = multiSource(source1, finalParameterTypes);
 
                     return Stream.of(1).map(o -> objectStream.toArray());
