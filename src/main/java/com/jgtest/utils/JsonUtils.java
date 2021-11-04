@@ -1,12 +1,15 @@
 package com.jgtest.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.paranamer.ParanamerModule;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +25,8 @@ public class JsonUtils {
     private static final Logger LOGGER = LogManager.getLogger(JsonUtils.class);
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final XmlMapper xmlMapper = new XmlMapper();
+
     // 日起格式化
     private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
     static {
@@ -84,7 +89,7 @@ public class JsonUtils {
             return null;
         }
         try {
-            return obj instanceof String ? (String) obj : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+            return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             LOGGER.warn("Parse Object to String error : {} ", e.getMessage());
             return null;
@@ -238,6 +243,32 @@ public class JsonUtils {
             LOGGER.warn("write file to Object error : {} " + e.getMessage());
         }
 
+    }
+
+    /**
+     * xml字符串转成JSON格式字符串
+     *
+     * @param xml
+     * @return
+     */
+    public static String convertXmlToJson(String xml) {
+
+
+        StringWriter w = new StringWriter();
+        try {
+            JsonParser jp = xmlMapper.getFactory().createParser(xml);
+            JsonGenerator jg = objectMapper.getFactory().createGenerator(w);
+            while (jp.nextToken() != null) {
+                jg.copyCurrentEvent(jp);
+            }
+            jp.close();
+            jg.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return w.toString();
     }
 
 

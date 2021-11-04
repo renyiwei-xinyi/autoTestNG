@@ -26,7 +26,7 @@ public class HttpUtils {
                 .build();
 
         LOGGER.info("start send HTTP:" + request);
-        LOGGER.info("jsonParameter:\n" + jsonString);
+        LOGGER.info("jsonParameter:" + jsonString);
 
         //发送请求，输出日志
         try {

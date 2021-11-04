@@ -9,11 +9,12 @@ import org.testng.ITestResult;
  */
 public class FailedRetry implements IRetryAnalyzer {
     private int retryCount = 1;
-    private static final int maxRetryCount = 2;
+    private static final int maxRetryCount = 3;
 
+    @Override
     public boolean retry(ITestResult iTestResult) {
-        //抛出异常则重跑失败案例
-        if (iTestResult.getThrowable() instanceof TestException && retryCount % maxRetryCount != 0) {
+        //If an exception is thrown, the failure case will be rerun. If it is an assertion error, try again
+        if (iTestResult.getThrowable() instanceof AssertionError && retryCount % maxRetryCount != 0) {
             retryCount++;
             return true;
         } else {
